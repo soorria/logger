@@ -1,0 +1,26 @@
+{
+  "name": "logger-comparison",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "format-test": "tsx formatting/main.ts"
+  },
+  "dependencies": {
+    "@logtape/logtape": "latest",
+    "winston": "latest",
+    "pino": "latest",
+    "pino-pretty": "latest",
+    "bunyan": "latest",
+    "loglayer": "latest",
+    "tslog": "latest",
+    "consola": "latest",
+    "roarr": "latest"
+  },
+  "devDependencies": {
+    "tsx": "latest",
+    "@types/bunyan": "latest",
+    "@types/node": "latest",
+    "typescript": "latest"
+  }
+}
