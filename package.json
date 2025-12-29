@@ -35,9 +35,11 @@
     "zshy": "^0.5.0"
   },
   "zshy": {
+    "cjs": false,
     "exports": {
-      ".": "src/index.ts",
-      "./pretty": "src/lib/pretty-formatter.ts"
+      ".": "src/exports/index.ts",
+      "./pretty": "src/exports/pretty.ts",
+      "./async-context": "src/exports/async-context.ts"
     }
   },
   "files": [
@@ -45,22 +47,19 @@
   ],
   "main": "./build/index.cjs",
   "module": "./build/index.js",
-  "types": "./build/index.d.cts",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
-      "types": "./build/index.d.cts",
-      "import": "./build/index.js",
-      "require": "./build/index.cjs"
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
     },
     "./pretty": {
-      "types": "./build/lib/pretty-formatter.d.cts",
-      "import": "./build/lib/pretty-formatter.js",
-      "require": "./build/lib/pretty-formatter.cjs"
+      "types": "./build/pretty.d.ts",
+      "import": "./build/pretty.js"
     },
     "./async-context": {
-      "types": "./build/lib/async-context.d.cts",
-      "import": "./build/lib/async-context.js",
-      "require": "./build/lib/async-context.cjs"
+      "types": "./build/async-context.d.ts",
+      "import": "./build/async-context.js"
     }
   },
   "keywords": [

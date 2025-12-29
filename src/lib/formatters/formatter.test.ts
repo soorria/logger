@@ -308,3 +308,4 @@ describe(errorToObject, () => {
     expect(result.message).toBe("custom error");
   });
 });
+

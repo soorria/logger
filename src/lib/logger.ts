@@ -1,5 +1,5 @@
-import { ConsoleTransport } from "./console-transport.js";
-import { DefaultLogFormatter } from "./formatter.js";
+import { ConsoleTransport } from "./transports/console-transport.js";
+import { DefaultLogFormatter } from "./formatters/formatter.js";
 import type {
   BlessedLogParameters,
   ILogger,

@@ -1,7 +1,7 @@
 import type { InspectOptions } from "node:util";
 import { inspect } from "node:util";
 
-import type { LogFormatter } from "./types.js";
+import type { LogFormatter } from "../types.js";
 
 /**
  * Default implementation of LogFormatter that handles JSON serialization
@@ -172,3 +172,4 @@ export function errorToObject(
 
   return errObject;
 }
+

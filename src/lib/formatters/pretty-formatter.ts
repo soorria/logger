@@ -1,8 +1,8 @@
 import { inspect } from "node:util";
 import kleur from "kleur";
 import { DefaultLogFormatter } from "./formatter.js";
-import type { LogData, LogFormatter } from "./types.js";
-import { LogLevel } from "./types.js";
+import type { LogData, LogFormatter } from "../types.js";
+import { LogLevel } from "../types.js";
 
 /**
  * Pretty log formatter inspired by pino-pretty.
@@ -166,3 +166,4 @@ const LOG_LEVEL_FORMATTING: Record<
     label: "",
   },
 };
+
