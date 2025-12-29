@@ -15,5 +15,10 @@
     "noUncheckedIndexedAccess": true,
     "noEmit": true
   },
-  "include": ["src", "vitest.config.ts", "eslint.config.mjs", "prettier.config.mjs"]
+  "include": [
+    "src",
+    "vitest.config.ts",
+    "eslint.config.mjs",
+    "prettier.config.mjs"
+  ]
 }

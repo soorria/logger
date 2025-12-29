@@ -1,5 +1,7 @@
 import { createConsola } from "consola";
-import { BaseLoggerAdapter, type LogLevel } from "../types.js";
+
+import type { LogLevel } from "../types.js";
+import { BaseLoggerAdapter } from "../types.js";
 
 class ConsolaAdapter extends BaseLoggerAdapter {
   name = "consola";

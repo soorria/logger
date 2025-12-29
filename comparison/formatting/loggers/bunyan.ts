@@ -1,5 +1,7 @@
 import bunyan from "bunyan";
-import { BaseLoggerAdapter, type LogLevel } from "../types.js";
+
+import type { LogLevel } from "../types.js";
+import { BaseLoggerAdapter } from "../types.js";
 
 class BunyanAdapter extends BaseLoggerAdapter {
   name = "bunyan";

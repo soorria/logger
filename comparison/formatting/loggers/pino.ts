@@ -1,6 +1,8 @@
 import pino from "pino";
 import pinoPretty from "pino-pretty";
-import { BaseLoggerAdapter, type LogLevel } from "../types.js";
+
+import type { LogLevel } from "../types.js";
+import { BaseLoggerAdapter } from "../types.js";
 
 class PinoAdapter extends BaseLoggerAdapter {
   name = "pino";

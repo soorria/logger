@@ -1,5 +1,7 @@
 import { ConsoleTransport, LogLayer } from "loglayer";
-import { BaseLoggerAdapter, type LogLevel } from "../types.js";
+
+import type { LogLevel } from "../types.js";
+import { BaseLoggerAdapter } from "../types.js";
 
 class LogLayerAdapter extends BaseLoggerAdapter {
   name = "loglayer";

@@ -2,8 +2,9 @@ import { readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { listTestCases, runTestSuite, testCases } from "./test-cases.js";
+
 import type { LoggerAdapter } from "./types.js";
+import { listTestCases, runTestSuite, testCases } from "./test-cases.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const loggersDir = join(__dirname, "loggers");

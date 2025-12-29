@@ -1,7 +1,7 @@
 import js from "@eslint/js";
-import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   { ignores: ["**/node_modules", "**/build", "**/coverage", "**/dist"] },
@@ -28,6 +28,5 @@ export default tseslint.config(
       "no-console": ["error", { allow: ["warn", "error"] }],
       curly: "error",
     },
-  }
+  },
 );
-

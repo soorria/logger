@@ -1,11 +1,8 @@
-import {
-  configure,
-  getConsoleSink,
-  getLogger,
-  type Logger,
-  reset,
-} from "@logtape/logtape";
-import { BaseLoggerAdapter, type LogLevel } from "../types.js";
+import type { Logger } from "@logtape/logtape";
+import { configure, getConsoleSink, getLogger, reset } from "@logtape/logtape";
+
+import type { LogLevel } from "../types.js";
+import { BaseLoggerAdapter } from "../types.js";
 
 class LogtapeAdapter extends BaseLoggerAdapter {
   name = "logtape";

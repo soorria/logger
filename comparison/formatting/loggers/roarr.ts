@@ -1,6 +1,8 @@
 import type { Roarr as RoarrType } from "roarr";
 import type { JsonObject } from "roarr/dist/types.js";
-import { BaseLoggerAdapter, type LogLevel } from "../types.js";
+
+import type { LogLevel } from "../types.js";
+import { BaseLoggerAdapter } from "../types.js";
 
 class RoarrAdapter extends BaseLoggerAdapter {
   name = "roarr";

@@ -1,12 +1,11 @@
 import { ClientRequest } from "node:http";
 import { describe, expect, it, vi } from "vitest";
 
-import { JsonLogFormatter, errorToObject } from "./json-formatter.js";
+import { errorToObject, JsonLogFormatter } from "./json-formatter.js";
 
 describe(JsonLogFormatter, () => {
   const formatter = new JsonLogFormatter();
   describe(JsonLogFormatter.prototype.formatLogData, () => {
-
     it("formats strings correctly", () => {
       const result = formatter.formatLogData("test string");
       expect(result).toBe("test string");
@@ -305,4 +304,3 @@ describe(errorToObject, () => {
     expect(result.message).toBe("custom error");
   });
 });
-

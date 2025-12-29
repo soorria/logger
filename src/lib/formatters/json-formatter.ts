@@ -1,5 +1,5 @@
-import type { InspectOptions } from "node:util";
 import { inspect } from "node:util";
+import type { InspectOptions } from "node:util";
 
 import type { LogFormatter } from "../types.js";
 
@@ -183,4 +183,3 @@ export function errorToObject(
 
   return errObject;
 }
-
