@@ -1,8 +1,21 @@
 import { inspect } from "node:util";
-import kleur from "kleur";
-import { JsonLogFormatter } from "./json-formatter.js";
+
 import type { LogData, LogFormatter } from "../types.js";
 import { LogLevel } from "../types.js";
+import { JsonLogFormatter } from "./json-formatter.js";
+
+// ANSI escape codes for terminal coloring
+const ANSI = {
+  reset: "\x1b[0m",
+  dim: "\x1b[2m",
+  blue: "\x1b[34m",
+  gray: "\x1b[90m",
+  bgBlue: "\x1b[44m",
+  bgGreen: "\x1b[42m",
+  bgYellow: "\x1b[43m",
+  bgRed: "\x1b[41m",
+  black: "\x1b[30m",
+} as const;
 
 /**
  * Options for configuring the PrettyLogFormatter.
@@ -26,9 +39,14 @@ export class PrettyLogFormatter
   constructor(options: PrettyLogFormatterOptions = {}) {
     super();
     this.useColors = options.colors ?? true;
+  }
 
-    // Configure kleur to respect our useColors setting
-    kleur.enabled = this.useColors;
+  /**
+   * Applies ANSI color codes to text if colors are enabled.
+   */
+  private colorize(text: string, ...codes: string[]): string {
+    if (!this.useColors) return text;
+    return `${codes.join("")}${text}${ANSI.reset}`;
   }
 
   /**
@@ -37,7 +55,7 @@ export class PrettyLogFormatter
    */
   override formatLogData(logData: LogData): string {
     const parts: string[] = [
-      `${kleur.gray(this.formatTimestamp())} ${this.formatLevel(logData.level)} ${kleur.blue(logData.message)}`,
+      `${this.colorize(this.formatTimestamp(), ANSI.gray)} ${this.formatLevel(logData.level)} ${this.colorize(logData.message, ANSI.blue)}`,
     ];
 
     if (logData.context) {
@@ -69,9 +87,9 @@ export class PrettyLogFormatter
    * Formats the log level with appropriate color and icon.
    */
   private formatLevel(level: LogLevel): string {
-    const { colorize, label } = LOG_LEVEL_FORMATTING[level];
+    const { codes, label } = LOG_LEVEL_FORMATTING[level];
 
-    return colorize(` ${label} `);
+    return this.colorize(` ${label} `, ...codes);
   }
 
   /**
@@ -81,7 +99,7 @@ export class PrettyLogFormatter
     return this.indent(
       Object.entries(context)
         .map(([key, value]) => {
-          return `${kleur.dim("context.")}${key}: ${this.formatInspect(value)}`;
+          return `${this.colorize("context.", ANSI.dim)}${key}: ${this.formatInspect(value)}`;
         })
         .join("\n"),
     );
@@ -99,7 +117,7 @@ export class PrettyLogFormatter
     return this.indent(
       Object.entries(data)
         .map(([key, value]) => {
-          return `${kleur.dim("data.")}${key}: ${this.formatInspect(value)}`;
+          return `${this.colorize("data.", ANSI.dim)}${key}: ${this.formatInspect(value)}`;
         })
         .join("\n"),
     );
@@ -143,31 +161,30 @@ const TAB = " ".repeat(4);
 
 const LOG_LEVEL_FORMATTING: Record<
   LogLevel,
-  { colorize: (text: string) => string; label: string }
+  { codes: string[]; label: string }
 > = {
   [LogLevel.debug]: {
-    colorize: kleur.bgBlue().black,
+    codes: [ANSI.bgBlue, ANSI.black],
     label: "DEBUG?",
   },
   [LogLevel.info]: {
-    colorize: kleur.bgGreen().black,
+    codes: [ANSI.bgGreen, ANSI.black],
     label: " INFO ",
   },
   [LogLevel.warn]: {
-    colorize: kleur.bgYellow().black,
+    codes: [ANSI.bgYellow, ANSI.black],
     label: " WARN ",
   },
   [LogLevel.error]: {
-    colorize: kleur.bgRed().black,
+    codes: [ANSI.bgRed, ANSI.black],
     label: "ERROR!",
   },
   [LogLevel.fatal]: {
-    colorize: kleur.bgRed().black,
+    codes: [ANSI.bgRed, ANSI.black],
     label: "FATAL!",
   },
   [LogLevel.silent]: {
-    colorize: (text) => text,
+    codes: [],
     label: "",
   },
 };
-

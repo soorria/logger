@@ -16,9 +16,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
-  "dependencies": {
-    "kleur": "^4.1.5"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
     "@types/node": "^22.10.2",
