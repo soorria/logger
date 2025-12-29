@@ -1,5 +1,3 @@
-import { ConsoleTransport } from "./transports/console-transport.js";
-import { JsonLogFormatter } from "./formatters/formatter.js";
 import type {
   BlessedLogParameters,
   ILogger,
@@ -8,18 +6,21 @@ import type {
   LoggerConfig,
   ResolvedLogConfig,
 } from "./types.js";
+import { JsonLogFormatter } from "./formatters/json-formatter.js";
+import { ConsoleTransport } from "./transports/console-transport.js";
 import { LogLevel } from "./types.js";
 import { isObject } from "./utils.js";
 
 export class Logger implements ILogger {
-  private config: ResolvedLogConfig
+  private config: ResolvedLogConfig;
 
-  constructor(
-    config: LoggerConfig = {},
-  ) {
+  constructor(config: LoggerConfig = {}) {
     let logLevel: LogLevel = LogLevel.debug;
     if (config.logLevel) {
-      logLevel = typeof config.logLevel === "string" ? LogLevel[config.logLevel] : config.logLevel;
+      logLevel =
+        typeof config.logLevel === "string"
+          ? LogLevel[config.logLevel]
+          : config.logLevel;
     } else if (process.env.LOG_LEVEL && process.env.LOG_LEVEL in LogLevel) {
       logLevel = LogLevel[process.env.LOG_LEVEL as keyof typeof LogLevel];
     }
@@ -33,15 +34,13 @@ export class Logger implements ILogger {
   }
 
   child(scope: Record<string, unknown>): this {
-    return new Logger(
-        {
-          ...this.config,
-          scope: {
-            ...this.config.scope,
-            ...scope,
-          },
-        },
-    ) as typeof this;
+    return new Logger({
+      ...this.config,
+      scope: {
+        ...this.config.scope,
+        ...scope,
+      },
+    }) as typeof this;
   }
 
   debug(...args: BlessedLogParameters): void {

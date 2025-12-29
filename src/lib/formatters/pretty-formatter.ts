@@ -1,6 +1,6 @@
 import { inspect } from "node:util";
 import kleur from "kleur";
-import { JsonLogFormatter } from "./formatter.js";
+import { JsonLogFormatter } from "./json-formatter.js";
 import type { LogData, LogFormatter } from "../types.js";
 import { LogLevel } from "../types.js";
 

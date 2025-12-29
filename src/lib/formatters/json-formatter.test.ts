@@ -1,7 +1,7 @@
 import { ClientRequest } from "node:http";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { JsonLogFormatter, errorToObject } from "./formatter.js";
+import { JsonLogFormatter, errorToObject } from "./json-formatter.js";
 
 describe(JsonLogFormatter, () => {
   const formatter = new JsonLogFormatter();

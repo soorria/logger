@@ -39,7 +39,9 @@
     "exports": {
       ".": "src/exports/index.ts",
       "./pretty": "src/exports/pretty.ts",
-      "./async-context": "src/exports/async-context.ts"
+      "./async-context": "src/exports/async-context.ts",
+      "./json": "src/exports/json.ts",
+      "./console": "src/exports/console.ts"
     }
   },
   "files": [
@@ -60,6 +62,14 @@
     "./async-context": {
       "types": "./build/async-context.d.ts",
       "import": "./build/async-context.js"
+    },
+    "./json": {
+      "types": "./build/json.d.ts",
+      "import": "./build/json.js"
+    },
+    "./console": {
+      "types": "./build/console.d.ts",
+      "import": "./build/console.js"
     }
   },
   "keywords": [

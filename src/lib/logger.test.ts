@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getParsedLoggedData } from "../tests/utils.js";
-import { JsonLogFormatter } from "./formatters/formatter.js";
+import { JsonLogFormatter } from "./formatters/json-formatter.js";
 import { Logger } from "./logger.js";
 import { LogLevel } from "./types.js";
 

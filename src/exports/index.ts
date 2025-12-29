@@ -1,7 +1,3 @@
-export {
-  JsonLogFormatter,
-  errorToObject,
-} from "../lib/formatters/formatter.js";
 export { Logger } from "../lib/logger.js";
 export {
   BlessedLogParameters,
