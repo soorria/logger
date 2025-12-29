@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { formatter, transport } from "../tests/config.js";
 import { getParsedLoggedData } from "../tests/utils.js";
 import { JsonLogFormatter } from "./formatters/json-formatter.js";
 import { Logger } from "./logger.js";
@@ -22,7 +23,7 @@ describe(Logger, () => {
     it.each(["debug", "info", "warn", "error", "fatal"] satisfies Array<
       keyof typeof LogLevel
     >)("logs %s messages", (level) => {
-      const logger = new Logger(undefined);
+      const logger = new Logger({ formatter, transport });
       logger[level]("test message", { data: "value" });
 
       expect(consoleSpy).toHaveBeenCalledOnce();
@@ -37,7 +38,7 @@ describe(Logger, () => {
     });
 
     it("silent method does nothing", () => {
-      const logger = new Logger();
+      const logger = new Logger({ formatter, transport });
       logger.silent();
 
       expect(consoleSpy).not.toHaveBeenCalled();
@@ -47,6 +48,8 @@ describe(Logger, () => {
   describe("child logging", () => {
     it("includes scope in log data", () => {
       const logger = new Logger({
+        formatter,
+        transport,
         logLevel: LogLevel.debug,
       });
       const scopedLogger = logger.child({ userId: "123", action: "test" });
@@ -65,6 +68,8 @@ describe(Logger, () => {
 
     it("creates new logger with additional scope", () => {
       const logger = new Logger({
+        formatter,
+        transport,
         logLevel: LogLevel.debug,
       });
       const scopedLogger = logger
@@ -87,6 +92,8 @@ describe(Logger, () => {
   describe("error logging", () => {
     it("properly formats errors", () => {
       const logger = new Logger({
+        formatter,
+        transport,
         logLevel: LogLevel.debug,
       });
       const error = new Error("test error");
@@ -105,6 +112,7 @@ describe(Logger, () => {
 
     it("should correctly use formatter overrides when error is passed directly", () => {
       const logger = new Logger({
+        transport,
         formatter: new (class extends JsonLogFormatter {
           override formatError(
             _key: string,
@@ -134,6 +142,8 @@ describe(Logger, () => {
   describe("log level filtering", () => {
     it("respects log level configuration", () => {
       const logger = new Logger({
+        formatter,
+        transport,
         logLevel: LogLevel.warn,
       });
 
@@ -148,7 +158,7 @@ describe(Logger, () => {
     it("uses LOG_LEVEL env var when config.logLevel is not provided", () => {
       vi.stubEnv("LOG_LEVEL", "warn");
 
-      const logger = new Logger();
+      const logger = new Logger({ formatter, transport });
 
       logger.debug("debug message");
       logger.info("info message");
@@ -164,6 +174,8 @@ describe(Logger, () => {
       vi.stubEnv("LOG_LEVEL", "warn");
 
       const logger = new Logger({
+        formatter,
+        transport,
         logLevel: LogLevel.debug,
       });
 
@@ -176,7 +188,7 @@ describe(Logger, () => {
     it("defaults to debug when LOG_LEVEL env var is invalid", () => {
       vi.stubEnv("LOG_LEVEL", "invalid");
 
-      const logger = new Logger();
+      const logger = new Logger({ formatter, transport });
 
       logger.debug("debug message");
       expect(consoleSpy).toHaveBeenCalledOnce();
@@ -187,7 +199,7 @@ describe(Logger, () => {
     it("defaults to debug when neither config.logLevel nor LOG_LEVEL env var is set", () => {
       vi.stubEnv("LOG_LEVEL", "");
 
-      const logger = new Logger();
+      const logger = new Logger({ formatter, transport });
 
       logger.debug("debug message");
       expect(consoleSpy).toHaveBeenCalledOnce();

@@ -41,7 +41,8 @@
       "./pretty": "src/exports/pretty.ts",
       "./async-context": "src/exports/async-context.ts",
       "./json": "src/exports/json.ts",
-      "./console": "src/exports/console.ts"
+      "./console": "src/exports/console.ts",
+      "./default-config": "src/exports/default-config.ts"
     }
   },
   "files": [
@@ -70,6 +71,10 @@
     "./console": {
       "types": "./build/console.d.ts",
       "import": "./build/console.js"
+    },
+    "./default-config": {
+      "types": "./build/default-config.d.ts",
+      "import": "./build/default-config.js"
     }
   },
   "keywords": [

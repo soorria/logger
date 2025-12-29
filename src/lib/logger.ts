@@ -6,15 +6,13 @@ import type {
   LoggerConfig,
   ResolvedLogConfig,
 } from "./types.js";
-import { JsonLogFormatter } from "./formatters/json-formatter.js";
-import { ConsoleTransport } from "./transports/console-transport.js";
 import { LogLevel } from "./types.js";
 import { isObject } from "./utils.js";
 
 export class Logger implements ILogger {
   private config: ResolvedLogConfig;
 
-  constructor(config: LoggerConfig = {}) {
+  constructor(config: LoggerConfig) {
     let logLevel: LogLevel = LogLevel.debug;
     if (config.logLevel) {
       logLevel =
@@ -28,8 +26,6 @@ export class Logger implements ILogger {
     this.config = {
       ...config,
       logLevel,
-      formatter: config.formatter ?? new JsonLogFormatter(),
-      transport: config.transport ?? new ConsoleTransport(),
     };
   }
 
