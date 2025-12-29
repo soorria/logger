@@ -1,5 +1,5 @@
 import { ConsoleTransport } from "./transports/console-transport.js";
-import { DefaultLogFormatter } from "./formatters/formatter.js";
+import { JsonLogFormatter } from "./formatters/formatter.js";
 import type {
   BlessedLogParameters,
   ILogger,
@@ -27,7 +27,7 @@ export class Logger implements ILogger {
     this.config = {
       ...config,
       logLevel,
-      formatter: config.formatter ?? new DefaultLogFormatter(),
+      formatter: config.formatter ?? new JsonLogFormatter(),
       transport: config.transport ?? new ConsoleTransport(),
     };
   }

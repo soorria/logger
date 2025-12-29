@@ -1,11 +1,11 @@
 import { ClientRequest } from "node:http";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { DefaultLogFormatter, errorToObject } from "./formatter.js";
+import { JsonLogFormatter, errorToObject } from "./formatter.js";
 
-describe(DefaultLogFormatter, () => {
-  const formatter = new DefaultLogFormatter();
-  describe(DefaultLogFormatter.prototype.formatLogData, () => {
+describe(JsonLogFormatter, () => {
+  const formatter = new JsonLogFormatter();
+  describe(JsonLogFormatter.prototype.formatLogData, () => {
     afterEach(() => {
       vi.unstubAllEnvs();
     });
@@ -23,7 +23,7 @@ describe(DefaultLogFormatter, () => {
     it("formats objects as JSON without space in prod", () => {
       vi.stubEnv("NODE_ENV", "production");
       const obj = { key: "value", number: 123 };
-      const result = new DefaultLogFormatter().formatLogData(obj);
+      const result = new JsonLogFormatter().formatLogData(obj);
       expect(result).toBe('{"key":"value","number":123}');
     });
 
@@ -106,7 +106,7 @@ describe(DefaultLogFormatter, () => {
         const obj: Record<string, unknown> = { name: "test" };
         obj.self = obj;
 
-        const result = new DefaultLogFormatter().formatLogData(obj);
+        const result = new JsonLogFormatter().formatLogData(obj);
 
         expect(result).toEqual(
           "<ref *1> { name: 'test', self: [Circular *1] }",
@@ -226,7 +226,7 @@ describe(DefaultLogFormatter, () => {
 
   describe("subclass", () => {
     it("can override formatLogData", () => {
-      class CustomFormatter extends DefaultLogFormatter {
+      class CustomFormatter extends JsonLogFormatter {
         formatLogData(arg: unknown): string {
           return super.formatLogData(arg) + " custom";
         }
@@ -241,7 +241,7 @@ describe(DefaultLogFormatter, () => {
 });
 
 describe(errorToObject, () => {
-  const formatter = new DefaultLogFormatter();
+  const formatter = new JsonLogFormatter();
   it("converts error to object", () => {
     const error = new Error("test error");
     const result = errorToObject(error, formatter);

@@ -1,6 +1,6 @@
 import { inspect } from "node:util";
 import kleur from "kleur";
-import { DefaultLogFormatter } from "./formatter.js";
+import { JsonLogFormatter } from "./formatter.js";
 import type { LogData, LogFormatter } from "../types.js";
 import { LogLevel } from "../types.js";
 
@@ -10,7 +10,7 @@ import { LogLevel } from "../types.js";
  * Extends DefaultLogFormatter to reuse error formatting and serialization logic.
  */
 export class PrettyLogFormatter
-  extends DefaultLogFormatter
+  extends JsonLogFormatter
   implements Required<LogFormatter>
 {
   private readonly useColors: boolean;

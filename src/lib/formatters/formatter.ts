@@ -10,7 +10,7 @@ import type { LogFormatter } from "../types.js";
  * Adjusts formatting based on environment - compact in production,
  * pretty-printed in development.
  */
-export class DefaultLogFormatter implements Required<LogFormatter> {
+export class JsonLogFormatter implements Required<LogFormatter> {
   private readonly isProd = process.env.NODE_ENV === "production";
   private readonly jsonStringifySpace = this.isProd ? undefined : 2;
   private readonly inspectOptions: InspectOptions = this.isProd

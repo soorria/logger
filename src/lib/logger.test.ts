@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getParsedLoggedData } from "../tests/utils.js";
-import { DefaultLogFormatter } from "./formatters/formatter.js";
+import { JsonLogFormatter } from "./formatters/formatter.js";
 import { Logger } from "./logger.js";
 import { LogLevel } from "./types.js";
 
@@ -105,7 +105,7 @@ describe(Logger, () => {
 
     it("should correctly use formatter overrides when error is passed directly", () => {
       const logger = new Logger({
-        formatter: new (class extends DefaultLogFormatter {
+        formatter: new (class extends JsonLogFormatter {
           override formatError(
             _key: string,
             error: Error,
