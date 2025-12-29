@@ -1,12 +1,74 @@
 {
   "name": "@soorria/logger",
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "Opinionated structured JSON logging",
+  "type": "module",
+  "sideEffects": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "zshy --watch",
+    "build": "zshy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
-  "keywords": [],
+  "dependencies": {
+    "kleur": "^4.1.5"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.17.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.19.1",
+    "vitest": "^2.1.8",
+    "zshy": "^0.5.0"
+  },
+  "zshy": {
+    "exports": {
+      ".": "src/index.ts",
+      "./pretty": "src/lib/pretty-formatter.ts"
+    }
+  },
+  "files": [
+    "build"
+  ],
+  "main": "./build/index.cjs",
+  "module": "./build/index.js",
+  "types": "./build/index.d.cts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.cts",
+      "import": "./build/index.js",
+      "require": "./build/index.cjs"
+    },
+    "./pretty": {
+      "types": "./build/lib/pretty-formatter.d.cts",
+      "import": "./build/lib/pretty-formatter.js",
+      "require": "./build/lib/pretty-formatter.cjs"
+    },
+    "./async-context": {
+      "types": "./build/lib/async-context.d.cts",
+      "import": "./build/lib/async-context.js",
+      "require": "./build/lib/async-context.cjs"
+    }
+  },
+  "keywords": [
+    "logger",
+    "logging",
+    "structured-logging",
+    "async-context"
+  ],
   "author": "Soorria Saruva <soorria.ss@gmail.com> (https://soorria.com/)",
   "license": "MIT",
   "packageManager": "pnpm@10.24.0"

@@ -1,37 +1,39 @@
-import { readdir } from 'node:fs/promises'
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
-import { parseArgs } from 'node:util'
-import { runTestSuite, listTestCases, testCases } from './test-cases.js'
-import type { LoggerAdapter } from './types.js'
+import { readdir } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { parseArgs } from "node:util";
+import { listTestCases, runTestSuite, testCases } from "./test-cases.js";
+import type { LoggerAdapter } from "./types.js";
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const loggersDir = join(__dirname, 'loggers')
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const loggersDir = join(__dirname, "loggers");
 
 async function loadAdapters(): Promise<LoggerAdapter[]> {
-  const files = await readdir(loggersDir)
-  const loggerFiles = files.filter(f => f.endsWith('.ts') || f.endsWith('.js'))
-  const adapters: LoggerAdapter[] = []
+  const files = await readdir(loggersDir);
+  const loggerFiles = files.filter(
+    (f) => f.endsWith(".ts") || f.endsWith(".js"),
+  );
+  const adapters: LoggerAdapter[] = [];
 
   for (const file of loggerFiles) {
-    const modulePath = join(loggersDir, file)
+    const modulePath = join(loggersDir, file);
     try {
-      const mod = await import(modulePath)
+      const mod = await import(modulePath);
 
       // Support both `adapters` array and single `adapter` export
       if (mod.adapters && Array.isArray(mod.adapters)) {
-        adapters.push(...mod.adapters)
+        adapters.push(...mod.adapters);
       } else if (mod.adapter) {
-        adapters.push(mod.adapter)
+        adapters.push(mod.adapter);
       } else {
-        console.log(`[SKIP] ${file}: no 'adapter' or 'adapters' export found`)
+        console.log(`[SKIP] ${file}: no 'adapter' or 'adapters' export found`);
       }
     } catch (err) {
-      console.log(`[ERROR] Failed to load ${file}:`, err)
+      console.log(`[ERROR] Failed to load ${file}:`, err);
     }
   }
 
-  return adapters
+  return adapters;
 }
 
 function printHelp(): void {
@@ -55,105 +57,110 @@ Examples:
   pnpm format-test --loggers=pino-pretty        Run only pino with pretty output
   pnpm format-test --cases=1,4,6                Run only test cases 1, 4, and 6
   pnpm format-test --loggers=pino --cases=1     Run pino with only test case 1
-`)
+`);
 }
 
 function listLoggers(adapters: LoggerAdapter[]): void {
-  console.log('\nAvailable loggers:\n')
+  console.log("\nAvailable loggers:\n");
   for (const adapter of adapters) {
-    const suffix = adapter.name.endsWith('-pretty') ? ' (pretty)' : ''
-    console.log(`  - ${adapter.name}${suffix}`)
+    const suffix = adapter.name.endsWith("-pretty") ? " (pretty)" : "";
+    console.log(`  - ${adapter.name}${suffix}`);
   }
-  console.log('')
+  console.log("");
 }
 
 async function main() {
   const { values } = parseArgs({
     options: {
-      help: { type: 'boolean', short: 'h', default: false },
-      'list-loggers': { type: 'boolean', default: false },
-      'list-cases': { type: 'boolean', default: false },
-      loggers: { type: 'string', default: '' },
-      cases: { type: 'string', default: '' },
+      help: { type: "boolean", short: "h", default: false },
+      "list-loggers": { type: "boolean", default: false },
+      "list-cases": { type: "boolean", default: false },
+      loggers: { type: "string", default: "" },
+      cases: { type: "string", default: "" },
     },
     strict: true,
-  })
+  });
 
   if (values.help) {
-    printHelp()
-    return
+    printHelp();
+    return;
   }
 
-  if (values['list-cases']) {
-    listTestCases()
-    return
+  if (values["list-cases"]) {
+    listTestCases();
+    return;
   }
 
-  const allAdapters = await loadAdapters()
+  const allAdapters = await loadAdapters();
 
-  if (values['list-loggers']) {
-    listLoggers(allAdapters)
-    return
+  if (values["list-loggers"]) {
+    listLoggers(allAdapters);
+    return;
   }
 
   // Filter loggers
   const loggerFilter = values.loggers
-    ? values.loggers.split(',').map(s => s.trim().toLowerCase())
-    : null
+    ? values.loggers.split(",").map((s) => s.trim().toLowerCase())
+    : null;
   const adaptersToRun = loggerFilter
-    ? allAdapters.filter(a => loggerFilter.includes(a.name.toLowerCase()))
-    : allAdapters
+    ? allAdapters.filter((a) => loggerFilter.includes(a.name.toLowerCase()))
+    : allAdapters;
 
   // Parse case IDs
   const caseIds = values.cases
     ? values.cases
-        .split(',')
-        .map(s => parseInt(s.trim(), 10))
-        .filter(n => !isNaN(n))
-    : undefined
+        .split(",")
+        .map((s) => parseInt(s.trim(), 10))
+        .filter((n) => !isNaN(n))
+    : undefined;
 
   if (adaptersToRun.length === 0) {
-    console.log('No matching loggers found.')
-    console.log('Available loggers:', allAdapters.map(a => a.name).join(', '))
-    return
+    console.log("No matching loggers found.");
+    console.log(
+      "Available loggers:",
+      allAdapters.map((a) => a.name).join(", "),
+    );
+    return;
   }
 
   if (caseIds && caseIds.length > 0) {
-    const validIds = testCases.map(tc => tc.id)
-    const invalidIds = caseIds.filter(id => !validIds.includes(id))
+    const validIds = testCases.map((tc) => tc.id);
+    const invalidIds = caseIds.filter((id) => !validIds.includes(id));
     if (invalidIds.length > 0) {
-      console.log(`Warning: Invalid case IDs ignored: ${invalidIds.join(', ')}`)
+      console.log(
+        `Warning: Invalid case IDs ignored: ${invalidIds.join(", ")}`,
+      );
     }
   }
 
-  const W = 70
-  const content = W - 4 // width inside ║  ...  ║
-  const loggersList = adaptersToRun.map(a => a.name).join(', ')
-  const casesList = caseIds ? caseIds.join(', ') : 'all'
+  const W = 70;
+  const content = W - 4; // width inside ║  ...  ║
+  const loggersList = adaptersToRun.map((a) => a.name).join(", ");
+  const casesList = caseIds ? caseIds.join(", ") : "all";
 
-  console.log(`\n╔${'═'.repeat(W - 2)}╗`)
-  console.log(`║  ${'LOGGER FORMATTING COMPARISON'.padEnd(content)}║`)
+  console.log(`\n╔${"═".repeat(W - 2)}╗`);
+  console.log(`║  ${"LOGGER FORMATTING COMPARISON".padEnd(content)}║`);
   console.log(
-    `║  ${('Loggers: ' + loggersList).substring(0, content).padEnd(content)}║`
-  )
+    `║  ${("Loggers: " + loggersList).substring(0, content).padEnd(content)}║`,
+  );
   console.log(
-    `║  ${('Cases: ' + casesList).substring(0, content).padEnd(content)}║`
-  )
-  console.log(`╚${'═'.repeat(W - 2)}╝`)
+    `║  ${("Cases: " + casesList).substring(0, content).padEnd(content)}║`,
+  );
+  console.log(`╚${"═".repeat(W - 2)}╝`);
 
   for (let i = 0; i < adaptersToRun.length; i++) {
-    const adapter = adaptersToRun[i]
-    await runTestSuite(adapter, { caseIds })
+    const adapter = adaptersToRun[i];
+    await runTestSuite(adapter, { caseIds });
 
     // Separator between loggers
     if (i < adaptersToRun.length - 1) {
-      console.log(`\n${'─'.repeat(W)}\n`)
+      console.log(`\n${"─".repeat(W)}\n`);
     }
   }
 
-  console.log(`\n╔${'═'.repeat(W - 2)}╗`)
-  console.log(`║  ${'COMPARISON COMPLETE'.padEnd(content)}║`)
-  console.log(`╚${'═'.repeat(W - 2)}╝\n`)
+  console.log(`\n╔${"═".repeat(W - 2)}╗`);
+  console.log(`║  ${"COMPARISON COMPLETE".padEnd(content)}║`);
+  console.log(`╚${"═".repeat(W - 2)}╝\n`);
 }
 
-main().catch(console.error)
+main().catch(console.error);

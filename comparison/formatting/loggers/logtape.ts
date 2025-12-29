@@ -1,16 +1,16 @@
 import {
   configure,
-  reset,
   getConsoleSink,
   getLogger,
   type Logger,
-} from '@logtape/logtape'
-import { BaseLoggerAdapter, type LogLevel } from '../types.js'
+  reset,
+} from "@logtape/logtape";
+import { BaseLoggerAdapter, type LogLevel } from "../types.js";
 
 class LogtapeAdapter extends BaseLoggerAdapter {
-  name = 'logtape'
+  name = "logtape";
 
-  private logger!: Logger
+  private logger!: Logger;
 
   async setup() {
     await configure({
@@ -19,31 +19,31 @@ class LogtapeAdapter extends BaseLoggerAdapter {
       },
       loggers: [
         {
-          category: ['comparison'],
-          sinks: ['console'],
-          lowestLevel: 'debug',
+          category: ["comparison"],
+          sinks: ["console"],
+          lowestLevel: "debug",
         },
       ],
       reset: true,
-    })
-    this.logger = getLogger(['comparison'])
+    });
+    this.logger = getLogger(["comparison"]);
   }
 
   log(level: LogLevel, message: string, data?: unknown) {
     const props =
-      data && typeof data === 'object'
+      data && typeof data === "object"
         ? (data as Record<string, unknown>)
-        : { data }
-    if (level === 'info') this.logger.info(message, props)
-    else if (level === 'warn') this.logger.warn(message, props)
-    else if (level === 'error') this.logger.error(message, props)
+        : { data };
+    if (level === "info") this.logger.info(message, props);
+    else if (level === "warn") this.logger.warn(message, props);
+    else if (level === "error") this.logger.error(message, props);
   }
 
   async teardown() {
-    await reset()
+    await reset();
   }
 }
 
 // Note: logtape doesn't have a built-in JSON mode
 
-export const adapters = [new LogtapeAdapter()]
+export const adapters = [new LogtapeAdapter()];
