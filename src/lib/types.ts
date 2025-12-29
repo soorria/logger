@@ -15,8 +15,10 @@ export interface LoggerConfig {
 
   /**
    * Log level verbosity (default: debug)
+   *
+   * If not provided, or not a valid LogLevel, `LogLevel.debug` is used.
    */
-  logLevel?: LogLevel | keyof typeof LogLevel;
+  logLevel?: LogLevel | keyof typeof LogLevel | (string & {});
 
   /**
    * Formatter to use for formatting log data.

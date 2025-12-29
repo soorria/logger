@@ -1,14 +1,11 @@
 import { ClientRequest } from "node:http";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { JsonLogFormatter, errorToObject } from "./json-formatter.js";
 
 describe(JsonLogFormatter, () => {
   const formatter = new JsonLogFormatter();
   describe(JsonLogFormatter.prototype.formatLogData, () => {
-    afterEach(() => {
-      vi.unstubAllEnvs();
-    });
 
     it("formats strings correctly", () => {
       const result = formatter.formatLogData("test string");
@@ -20,10 +17,9 @@ describe(JsonLogFormatter, () => {
       expect(result).toBe("42");
     });
 
-    it("formats objects as JSON without space in prod", () => {
-      vi.stubEnv("NODE_ENV", "production");
+    it("formats objects as compact JSON when compact option is true", () => {
       const obj = { key: "value", number: 123 };
-      const result = new JsonLogFormatter().formatLogData(obj);
+      const result = new JsonLogFormatter({ compact: true }).formatLogData(obj);
       expect(result).toBe('{"key":"value","number":123}');
     });
 
@@ -101,12 +97,13 @@ describe(JsonLogFormatter, () => {
         );
       });
 
-      it("uses compact inspect format in production", () => {
-        vi.stubEnv("NODE_ENV", "production");
+      it("uses compact inspect format when compact option is true", () => {
         const obj: Record<string, unknown> = { name: "test" };
         obj.self = obj;
 
-        const result = new JsonLogFormatter().formatLogData(obj);
+        const result = new JsonLogFormatter({ compact: true }).formatLogData(
+          obj,
+        );
 
         expect(result).toEqual(
           "<ref *1> { name: 'test', self: [Circular *1] }",

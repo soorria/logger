@@ -10,13 +10,11 @@ describe(Logger, () => {
   let consoleSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
-    vi.stubEnv("LOG_LEVEL", "debug");
     consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
   });
 
   afterEach(() => {
     vi.resetAllMocks();
-    vi.unstubAllEnvs();
   });
 
   describe("basic logging", () => {
@@ -155,10 +153,12 @@ describe(Logger, () => {
       expect(consoleSpy).toHaveBeenCalledOnce();
     });
 
-    it("uses LOG_LEVEL env var when config.logLevel is not provided", () => {
-      vi.stubEnv("LOG_LEVEL", "warn");
-
-      const logger = new Logger({ formatter, transport });
+    it("accepts string log level", () => {
+      const logger = new Logger({
+        formatter,
+        transport,
+        logLevel: "warn",
+      });
 
       logger.debug("debug message");
       logger.info("info message");
@@ -166,45 +166,24 @@ describe(Logger, () => {
 
       logger.warn("warn message");
       expect(consoleSpy).toHaveBeenCalledOnce();
-
-      vi.unstubAllEnvs();
     });
 
-    it("config.logLevel takes precedence over LOG_LEVEL env var", () => {
-      vi.stubEnv("LOG_LEVEL", "warn");
-
+    it("defaults to debug when string logLevel is invalid", () => {
       const logger = new Logger({
         formatter,
         transport,
-        logLevel: LogLevel.debug,
+        logLevel: "invalid",
       });
 
       logger.debug("debug message");
       expect(consoleSpy).toHaveBeenCalledOnce();
-
-      vi.unstubAllEnvs();
     });
 
-    it("defaults to debug when LOG_LEVEL env var is invalid", () => {
-      vi.stubEnv("LOG_LEVEL", "invalid");
-
+    it("defaults to debug when logLevel is not provided", () => {
       const logger = new Logger({ formatter, transport });
 
       logger.debug("debug message");
       expect(consoleSpy).toHaveBeenCalledOnce();
-
-      vi.unstubAllEnvs();
-    });
-
-    it("defaults to debug when neither config.logLevel nor LOG_LEVEL env var is set", () => {
-      vi.stubEnv("LOG_LEVEL", "");
-
-      const logger = new Logger({ formatter, transport });
-
-      logger.debug("debug message");
-      expect(consoleSpy).toHaveBeenCalledOnce();
-
-      vi.unstubAllEnvs();
     });
   });
 });

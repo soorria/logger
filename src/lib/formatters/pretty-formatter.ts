@@ -5,6 +5,14 @@ import type { LogData, LogFormatter } from "../types.js";
 import { LogLevel } from "../types.js";
 
 /**
+ * Options for configuring the PrettyLogFormatter.
+ */
+export interface PrettyLogFormatterOptions {
+  /** Enable colored output (default: true) */
+  colors?: boolean;
+}
+
+/**
  * Pretty log formatter inspired by pino-pretty.
  * Formats logs with colors and human-readable formatting for development.
  * Extends DefaultLogFormatter to reuse error formatting and serialization logic.
@@ -15,13 +23,9 @@ export class PrettyLogFormatter
 {
   private readonly useColors: boolean;
 
-  constructor() {
+  constructor(options: PrettyLogFormatterOptions = {}) {
     super();
-    // Auto-detect if colors are supported (not in CI or when explicitly disabled)
-    this.useColors =
-      process.env.CI !== "true" &&
-      process.env.NO_COLOR !== "1" &&
-      process.stdout.isTTY;
+    this.useColors = options.colors ?? true;
 
     // Configure kleur to respect our useColors setting
     kleur.enabled = this.useColors;

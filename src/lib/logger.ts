@@ -15,12 +15,14 @@ export class Logger implements ILogger {
   constructor(config: LoggerConfig) {
     let logLevel: LogLevel = LogLevel.debug;
     if (config.logLevel) {
-      logLevel =
-        typeof config.logLevel === "string"
-          ? LogLevel[config.logLevel]
-          : config.logLevel;
-    } else if (process.env.LOG_LEVEL && process.env.LOG_LEVEL in LogLevel) {
-      logLevel = LogLevel[process.env.LOG_LEVEL as keyof typeof LogLevel];
+      if (typeof config.logLevel === "number") {
+        logLevel = config.logLevel;
+      } else if (
+        typeof config.logLevel === "string" &&
+        config.logLevel in LogLevel
+      ) {
+        logLevel = LogLevel[config.logLevel as keyof typeof LogLevel];
+      }
     }
 
     this.config = {

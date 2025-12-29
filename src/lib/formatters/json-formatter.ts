@@ -4,33 +4,44 @@ import { inspect } from "node:util";
 import type { LogFormatter } from "../types.js";
 
 /**
+ * Options for configuring the JsonLogFormatter.
+ */
+export interface JsonLogFormatterOptions {
+  /** Compact output on single lines (default: false) */
+  compact?: boolean;
+}
+
+/**
  * Default implementation of LogFormatter that handles JSON serialization
  * and formatting of various data types for logging purposes.
- *
- * Adjusts formatting based on environment - compact in production,
- * pretty-printed in development.
  */
 export class JsonLogFormatter implements Required<LogFormatter> {
-  private readonly isProd = process.env.NODE_ENV === "production";
-  private readonly jsonStringifySpace = this.isProd ? undefined : 2;
-  private readonly inspectOptions: InspectOptions = this.isProd
-    ? {
-        /**
-         * Compact in prod so all the data is on a single log line.
-         */
-        compact: true,
-      }
-    : {
-        /**
-         * For local dev, we want to see as much of the object as possible.
-         */
-        depth: null,
-        /**
-         * Add formatting - has a similar effect to the `space` option of
-         * `JSON.stringify`.
-         */
-        compact: false,
-      };
+  private readonly compact: boolean;
+  private readonly jsonStringifySpace: number | undefined;
+  private readonly inspectOptions: InspectOptions;
+
+  constructor(options: JsonLogFormatterOptions = {}) {
+    this.compact = options.compact ?? false;
+    this.jsonStringifySpace = this.compact ? undefined : 2;
+    this.inspectOptions = this.compact
+      ? {
+          /**
+           * Compact in prod so all the data is on a single log line.
+           */
+          compact: true,
+        }
+      : {
+          /**
+           * For local dev, we want to see as much of the object as possible.
+           */
+          depth: null,
+          /**
+           * Add formatting - has a similar effect to the `space` option of
+           * `JSON.stringify`.
+           */
+          compact: false,
+        };
+  }
 
   /**
    * Formats any data type into a string suitable for logging.
