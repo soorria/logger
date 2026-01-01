@@ -14,10 +14,12 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "release": "changeset publish",
+    "changeset": "changeset"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
     "@types/node": "^22.10.2",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
