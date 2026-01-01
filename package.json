@@ -1,6 +1,6 @@
 {
   "name": "@soorria/logger",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Opinionated structured JSON logging",
   "type": "module",
   "sideEffects": false,
