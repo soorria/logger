@@ -1,6 +1,6 @@
 # @soorria/logger
 
-Opinionated structured logging for Node.js with async context support.
+Opinionated structured logging for Node.js with optional async context support.
 
 ## Features
 
@@ -8,13 +8,10 @@ Opinionated structured logging for Node.js with async context support.
 - **Pretty formatting** - Human-readable colored output for development
 - **Async context tracking** - Automatically attach request IDs, job IDs, etc. to all logs within a context
 - **Child loggers** - Create scoped loggers with additional metadata
-- **TypeScript first** - Full type safety
 
 ## Installation
 
 ```bash
-npm install @soorria/logger
-# or
 pnpm add @soorria/logger
 ```
 
@@ -22,12 +19,10 @@ pnpm add @soorria/logger
 
 ```typescript
 import { Logger } from "@soorria/logger";
-import { JsonLogFormatter } from "@soorria/logger/json";
-import { ConsoleTransport } from "@soorria/logger/console";
+import { getDefaultConfig } from "@soorria/logger/default-config";
 
 const logger = new Logger({
-  formatter: new JsonLogFormatter(),
-  transport: new ConsoleTransport(),
+  ...getDefaultConfig({ production: process.env.NODE_ENV === "production" }),
 });
 
 logger.info("Hello world");
@@ -74,6 +69,7 @@ const logger = new Logger({
 ```
 
 This uses:
+
 - **Production**: Compact JSON formatter
 - **Development**: Pretty colored formatter
 
@@ -83,7 +79,7 @@ Automatically attach contextual information (like request IDs) to all logs withi
 
 ```typescript
 import { Logger } from "@soorria/logger";
-import { runWithContext, getLogContext } from "@soorria/logger/async-context";
+import { getLogContext, runWithContext } from "@soorria/logger/async-context";
 import { getDefaultConfig } from "@soorria/logger/default-config";
 
 const logger = new Logger({
@@ -113,7 +109,7 @@ import { mutateContextScope } from "@soorria/logger/async-context";
 runWithContext({ requestId: "abc-123" }, () => {
   // Later in the request...
   mutateContextScope({ userId: "user-456" });
-  
+
   logger.info("User action"); // Includes both requestId and userId
 });
 ```
@@ -123,7 +119,9 @@ runWithContext({ requestId: "abc-123" }, () => {
 Create loggers with additional scope attached to every log:
 
 ```typescript
-const logger = new Logger({ /* config */ });
+const logger = new Logger({
+  /* config */
+});
 
 const userLogger = logger.child({ module: "users" });
 userLogger.info("User created"); // Includes module: "users"
@@ -155,6 +153,7 @@ const logger = new Logger({
   // or
   logLevel: "warn", // String version also works
   // ...
+  logLevel: process.env.LOG_LEVEL,
 });
 ```
 
@@ -172,16 +171,15 @@ try {
 
 ## Exports
 
-| Export | Description |
-|--------|-------------|
-| `@soorria/logger` | Core `Logger` class and types |
-| `@soorria/logger/json` | `JsonLogFormatter` |
-| `@soorria/logger/pretty` | `PrettyLogFormatter` |
-| `@soorria/logger/console` | `ConsoleTransport` |
-| `@soorria/logger/async-context` | `runWithContext`, `getLogContext`, `mutateContextScope` |
-| `@soorria/logger/default-config` | `getDefaultConfig` helper |
+| Export                           | Description                                             |
+| -------------------------------- | ------------------------------------------------------- |
+| `@soorria/logger`                | Core `Logger` class and types                           |
+| `@soorria/logger/json`           | `JsonLogFormatter`                                      |
+| `@soorria/logger/pretty`         | `PrettyLogFormatter`                                    |
+| `@soorria/logger/console`        | `ConsoleTransport`                                      |
+| `@soorria/logger/async-context`  | `runWithContext`, `getLogContext`, `mutateContextScope` |
+| `@soorria/logger/default-config` | `getDefaultConfig` helper                               |
 
 ## License
 
 MIT
-
