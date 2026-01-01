@@ -2,6 +2,8 @@
 
 Opinionated structured logging for Node.js with optional async context support.
 
+[![xkcd: Standards](https://imgs.xkcd.com/comics/standards.png)](https://xkcd.com/927/)
+
 ## Features
 
 - **Structured JSON logging** - Machine-readable logs for production
